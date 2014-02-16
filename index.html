@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-.subunit { fill: #ddc; }
-.subunit.RISARALDA { fill: #cdd; }
-.subunit.ANTIOQUIA { fill: #cdc; }
-.subunit.BOLIVAR { fill: #dcd; }
+.dept { fill: #ddc; }
+.dept.RISARALDA { fill: #cdd; }
+.dept.BOYACA { fill: #cdc; }
+.dept.AMAZONAS { fill: #dcd; }
+.dept-borde {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1;}
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -34,11 +38,15 @@ d3.json("colombia-departamentos.json", function(error, co) {
 	svg.append("path")
 		.datum(subunits)
 		.attr("d", path);
-	svg.selectAll(".subunit")
+	svg.selectAll(".dept")
 	    .data(topojson.feature(co, co.objects.depts).features)
   		.enter().append("path")
-    	.attr("class", function(d) { return "subunit " + d.id; })
+    	.attr("class", function(d) { return "dept " + d.id; })
     	.attr("d", path);
+    svg.append("path")
+    .datum(topojson.mesh(co, co.objects.depts, function(a, b) { return a !== b; }))
+    .attr("d", path)
+    .attr("class", "dept-borde");
 });
 
 </script>
