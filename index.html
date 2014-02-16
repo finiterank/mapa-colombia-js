@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+.subunit { fill: #ddc; }
+.subunit.RISARALDA { fill: #cdd; }
+.subunit.ANTIOQUIA { fill: #cdc; }
+.subunit.BOLIVAR { fill: #dcd; }
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var width = 900,
+    height = 900;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+/* 
+ogr2ogr -f GeoJSON depts.json depto.shp -s_srs EPSG:26986 -t_srs EPSG:4326
+topojson --id-property NOMBRE_DPT -p name=NOMBRE_DPT -p name -o colombia-departamentos.json depts.json
+*/
+
+d3.json("colombia-departamentos.json", function(error, co) {
+    var subunits = topojson.feature(co, co.objects.depts);
+    var projection = d3.geo.mercator()
+    	.scale(2000)
+    	.translate([width / 2, height / 2])
+    	.center([-61,43]);
+	var path = d3.geo.path()
+		.projection(projection);
+	svg.append("path")
+		.datum(subunits)
+		.attr("d", path);
+	svg.selectAll(".subunit")
+	    .data(topojson.feature(co, co.objects.depts).features)
+  		.enter().append("path")
+    	.attr("class", function(d) { return "subunit " + d.id; })
+    	.attr("d", path);
+});
+
+</script>
