@@ -1,3 +1,3 @@
-# Mapa de Colombia por departamentos
+# Mapa de Colombia
 
 Usando D3 y TopoJSON. 
